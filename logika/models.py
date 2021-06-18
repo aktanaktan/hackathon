@@ -69,3 +69,23 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.owner}->{self.post}->{self.created_at}-{self.body[0:10]}"
+
+
+class Rating(models.Model):
+    VALUE = (
+        ("1", "1"),
+        ("2", "2"),
+        ("3", "3"),
+        ("4", "4"),
+        ("5", "5"),
+    )
+
+    rating_field = models.CharField(choices=VALUE, max_length=1)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name="rating")
+
+    def str(self):
+        return f"{self.rating_field} - {self.article}"
+
+    class Meta:
+        verbose_name = 'Рейтинг'
+        verbose_name_plural = 'Рейтинги'

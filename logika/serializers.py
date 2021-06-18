@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
-from .models import Article, Comment, Category, ArticleImages
+from .models import Article, Comment, Category, ArticleImages, Rating
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -36,7 +36,7 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Article
-        fields = ('id', 'title', 'body', 'owner', 'comments', 'category', 'preview', 'images', )
+        fields = ('id', 'title', 'body', 'owner', 'comments', 'category', 'preview', 'images', 'rating')
 
 
 
@@ -66,3 +66,9 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('id', 'body', 'owner', 'post')
+
+
+class RatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rating
+        fields = '__all__'
