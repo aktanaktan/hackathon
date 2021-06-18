@@ -2,12 +2,20 @@ from django.db import connection
 from django_filters import rest_framework as filters
 from rest_framework import generics
 from rest_framework import permissions
-from logika import serializers
+
 from django.contrib.auth.models import User
 
+from rest_framework.pagination import PageNumberPagination
 
+from . import serializers
 from .models import Article, Comment, Category
 from .permissions import IsOwnerOrReadOnly
+
+
+class StandardResultSetPagination(PageNumberPagination):
+    page_size = 2
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
 
 
 class ArticleListView(generics.ListAPIView):
@@ -15,6 +23,7 @@ class ArticleListView(generics.ListAPIView):
     serializer_class = serializers.ArticleSerializer
     filter_backends = (filters.DjangoFilterBackend, )
     filterset_fields = ('title', 'category')
+    pagination_class = StandardResultSetPagination
 
     def dispatch(self, request, *args, **kwargs):
         response = super().dispatch(request, *args, **kwargs)
@@ -65,3 +74,8 @@ class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
 class CategoryView(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = serializers.CategorySerializer
+
+
+class RatingDetailView(generics.RetrieveAPIView):
+    queryset = Article.objects.all()
+    serializer_class = serializers.RatingSerializer

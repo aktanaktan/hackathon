@@ -7,8 +7,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from user.send_mail import send_confirmation_email
+
 from . import serializers
+from .send_mail import send_confirmation_email
 
 User = get_user_model()
 
