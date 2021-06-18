@@ -1,15 +1,15 @@
 from django.db import connection
+from django.db.models import Q
 from django_filters import rest_framework as filters
 from rest_framework import generics
 from rest_framework import permissions
-
-from django.contrib.auth.models import User
 
 from rest_framework.pagination import PageNumberPagination
 
 from . import serializers
 from .models import Article, Comment, Category
 from .permissions import IsOwnerOrReadOnly
+
 
 
 class StandardResultSetPagination(PageNumberPagination):
@@ -29,6 +29,14 @@ class ArticleListView(generics.ListAPIView):
         response = super().dispatch(request, *args, **kwargs)
         print(f'Queries Counted: {len(connection.queries)}')
         return response
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search = self.request.query_params.get('search', '')
+        if search:
+            queryset = queryset.filter(
+                Q(title__icontains=search) | Q(id__icontains=search))
+        return queryset
 
 
 class ArticleCreateView(generics.CreateAPIView):
@@ -78,4 +86,4 @@ class CategoryView(generics.ListAPIView):
 
 class RatingDetailView(generics.RetrieveAPIView):
     queryset = Article.objects.all()
-    serializer_class = serializers.RatingSerializer
+    serializer_class = serializers.RatingDetailSerializer

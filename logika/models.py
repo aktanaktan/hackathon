@@ -22,7 +22,7 @@ class Article(models.Model):
     # Raychel.posts.all()
     # Peter.post_set.all()
     title = models.CharField(max_length=100)
-    body = models.TextField(blank=True)
+    body = models.TextField(blank=False)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='posts',
         on_delete=models.CASCADE
     )
@@ -80,7 +80,7 @@ class Rating(models.Model):
         ("5", "5"),
     )
 
-    rating_field = models.CharField(choices=VALUE, max_length=1)
+    rating_field = models.CharField(choices=VALUE, max_length=1, blank=True)
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name="rating")
 
     def str(self):

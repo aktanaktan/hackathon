@@ -26,13 +26,17 @@ class ArticleImageSerializer(serializers.ModelSerializer):
         model = ArticleImages
         exclude = ('id', )
 
-
+class RatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rating
+        fields = ('rating_field',)
 
 class ArticleSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.email')
     comments = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-    category = CategorySerializer(many=False, read_only=True)
+    # category = CategorySerializer(many=False, required=True)
     images = ArticleImageSerializer(many=True, read_only=True, required=False)
+    rating = RatingSerializer(many=True, read_only=True, required=False)
 
     class Meta:
         model = Article
@@ -68,7 +72,14 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ('id', 'body', 'owner', 'post')
 
 
-class RatingSerializer(serializers.ModelSerializer):
+
+
+class RatingDetailSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Rating
-        fields = '__all__'
+        model = Article
+        fields = ('rating',)
+
+    def validate(self, attrs):
+        return super().validate(attrs)
+
+
